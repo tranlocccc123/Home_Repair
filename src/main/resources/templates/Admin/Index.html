@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Trang chủ</title>
+<link href="/Asset/img/favicon.ico" rel="icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Inter:wght@700;800&display=swap"
+	rel="stylesheet">
+
+<!-- Icon Font Stylesheet -->
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0//Asset/css/all.min.css"
+	rel="stylesheet">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+	rel="stylesheet">
+
+<!-- Libraries Stylesheet -->
+<link href="/Asset/lib/animate/animate.min.css" rel="stylesheet">
+<link href="/Asset/lib/owlcarousel/assets/owl.carousel.min.css"
+	rel="stylesheet">
+
+<!-- Customized Bootstrap Stylesheet -->
+<link href="/Asset/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Template Stylesheet -->
+<link href="/Asset/css/style.css" rel="stylesheet">
+</head>
+<body>
+	<div class="container-xxl bg-white p-0">
+		<div th:replace="~{Common/Client_layout :: header}"></div>
+		<div class="container-xxl py-5">
+			<div class="container">
+				<div class="row g-0 gx-5 align-items-end">
+					<div class="col-lg-6">
+						<div class="text-start mx-auto mb-5 wow slideInLeft"
+							data-wow-delay="0.1s">
+							<h1 class="mb-3">Service</h1>
+							<p>Eirmod sed ipsum dolor sit rebum labore magna erat. Tempor
+								ut dolore lorem kasd vero ipsum sit eirmod sit diam justo sed
+								rebum.</p>
+						</div>
+					</div>
+					<div class="col-lg-6 text-start text-lg-end wow slideInRight"
+						data-wow-delay="0.1s">
+						<ul class="nav nav-pills d-inline-flex justify-content-end mb-5">
+							<li class="nav-item me-2"><a
+								class="btn btn-outline-primary active" data-bs-toggle="pill"
+								href="#tab-1">Featured</a></li>
+							<li class="nav-item me-2"><a class="btn btn-outline-primary"
+								data-bs-toggle="pill" href="#tab-2">For Sell</a></li>
+							<li class="nav-item me-0"><a class="btn btn-outline-primary"
+								data-bs-toggle="pill" href="#tab-3">For Rent</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="tab-content">
+					<div id="tab-1" class="tab-pane fade show p-0 active">
+						<div class="row g-4">
+							<div class="row">
+								<div class="col-lg-4 col-md-6 wow fadeInUp"
+									data-wow-delay="0.5s" th:each="service : ${service}">
+									<div class="property-item rounded overflow-hidden">
+										<div class="position-relative overflow-hidden">
+											<!-- Display the main image or noimage.jpg if no main image is found -->
+											<a
+												th:href="@{/client/Servicedetail/{id}(id=${service.serviceId})}">
+												<img class="img-fluid" th:each="option : ${lsImage}"
+												th:if="${option.serviceID == service.serviceId && option.mainStatus == 1}"
+												th:attr="src=@{/Uploads/{imagename}(imagename=${option.imageName})}"
+												alt="Service Image">
+											</a>
+											<div
+												class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">Sale</div>
+											<div
+												class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">View</div>
+										</div>
+
+										<div class="p-4 pb-0">
+											<h5 class="text-primary mb-3" th:text="${service.price}"></h5>
+											<a class="d-block h5 mb-2" href="#"
+												th:text="${service.description}"></a>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- Pagination Section -->
+							<div class="pagination">
+								<ul class="pagination justify-content-center">
+									<!-- Previous Button -->
+									<li class="page-item" th:if="${currentPage > 0}"><a
+										class="page-link"
+										th:href="@{/client/Service(page=${currentPage - 1}, size=${size})}">Previous</a>
+									</li>
+
+									<!-- Page Numbers -->
+									<li class="page-item"
+										th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+										th:classappend="${i == currentPage} ? 'active'"><a
+										class="page-link"
+										th:href="@{/client/Service(page=${i}, size=${size})}"
+										th:text="${i + 1}"></a></li>
+
+									<!-- Next Button -->
+									<li class="page-item" th:if="${currentPage < totalPages - 1}">
+										<a class="page-link"
+										th:href="@{/client/Service(page=${currentPage + 1}, size=${size})}">Next</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:replace="~{Common/Client_layout :: footer}"></div>
+
+</body>
+</html>

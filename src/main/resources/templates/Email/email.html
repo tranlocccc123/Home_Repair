@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Send Email</title>
+</head>
+<body>
+
+<h1>Send Email Form</h1>
+
+<form th:action="@{/sendVerificationEmail}" method="post">
+
+    <label for="to">Enter Your Email</label>
+    <input type="email" id="email" name="email" required><br><br>
+   
+    <button type="submit">Send </button>
+</form>
+
+<!-- Hiển thị thông báo nếu có -->
+<p th:if="${message}" th:text="${message}"></p>
+
+</body>
+</html>

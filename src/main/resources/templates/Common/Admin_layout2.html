@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="cssAdmin">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Star Admin2</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="/template/vendors/feather/feather.css">
+    <link rel="stylesheet" href="/template/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/template/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="/template/vendors/typicons/typicons.css">
+    <link rel="stylesheet" href="/template/vendors/simple-line-icons/css/simple-line-icons.css">
+    <link rel="stylesheet" href="/template/vendors/css/vendor.bundle.base.css">
+    <!-- End plugin css for this page -->
+    <link rel="stylesheet" href="/template/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="/template/js/select.dataTables.min.css">
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/template/css/vertical-layout-light/style.css">
+    <link rel="shortcut icon" href="/template/images/favicon.png" />
+
+    <!-- Plugin js for this page -->
+    <script src="/template/vendors/js/vendor.bundle.base.js"></script>
+    <script src="/template/vendors/chart.js/Chart.min.js"></script>
+    <script src="/template/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    <script src="/template/vendors/progressbar.js/progressbar.min.js"></script>
+    <!-- Custom js for this page -->
+    <script src="/template/js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="/template/js/dashboard.js"></script>
+</head>
+
+<body>
+    <div class="container-scroller">
+        <!-- Navbar Section -->
+        <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+            <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+                <a class="navbar-brand brand-logo" href="index.html">
+                    <img src="/template/images/logo.svg" alt="logo" />
+                </a>
+                <a class="navbar-brand brand-logo-mini" href="index.html">
+                    <img src="/template/images/logo-mini.svg" alt="logo" />
+                </a>
+            </div>
+            <div class="navbar-menu-wrapper d-flex align-items-top">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <h1 class="welcome-text">Good Morning, <span class="text-black fw-bold">John Doe</span></h1>
+                        <h3 class="welcome-sub-text">Your performance summary this week</h3>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown">
+                            <img class="img-xs rounded-circle" src="/template/images/faces/face8.jpg" alt="Profile image">
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown">
+                            <div class="dropdown-header text-center">
+                                <img class="img-md rounded-circle" src="/template/images/faces/face8.jpg" alt="Profile image">
+                                <p class="mb-1 mt-3 font-weight-semibold">Allen Moreno</p>
+                                <p class="fw-light text-muted mb-0">allenmoreno@gmail.com</p>
+                            </div>
+                            <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> My Profile</a>
+                            <a class="dropdown-item"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i> Sign Out</a>
+                        </div>
+                    </li>
+                </ul>
+                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
+                    <span class="mdi mdi-menu"></span>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Main content wrapper -->
+        <div class="container-fluid page-body-wrapper">
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="mdi mdi-grid-large menu-icon"></i>
+                            <span class="menu-title">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#form-elements" aria-expanded="false" aria-controls="form-elements">
+                            <i class="menu-icon mdi mdi-card-text-outline"></i>
+                            <span class="menu-title">Form Elements</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="form-elements">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item"><a class="nav-link" href="pages/forms/basic_elements.html">Basic Elements</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <!-- Add more menu items here as needed -->
+                </ul>
+            </nav>
+
+            <!-- Page Content -->
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <!-- Add your page content here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script for additional features -->
+    <script src="/template/js/off-canvas.js"></script>
+    <script src="/template/js/hoverable-collapse.js"></script>
+    <script src="/template/js/template.js"></script>
+    <script src="/template/js/settings.js"></script>
+</body>
+
+</html>

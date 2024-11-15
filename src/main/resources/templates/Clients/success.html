@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Success</title>
+    <!-- <meta http-equiv="refresh" content="3;url=@{${message}}">> -->
+    <meta th:attr="http-equiv='refresh', content='3;url=' + @{${redirectUrl}}">
+    <style>
+        .message {
+            color: green;
+            font-size: 1.5rem;
+            text-align: center;
+            margin-top: 20%;
+        }
+    </style>
+</head>
+<body>
+    <div class="message">
+        <h2 th:text="${message}"></h2>
+        <p>You will be redirected to the quote creation page in 3 seconds.</p>
+    </div>
+</body>
+</html>

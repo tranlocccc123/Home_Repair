@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gửi Khảo Sát</title>
+</head>
+<body>
+    <h1>Gửi Khảo Sát</h1>
+    <form action="#" th:action="@{/quotes}" th:object="${quote}" method="post">
+         
+        <label for="customerId">Mã Khách Hàng:</label>
+        <input type="number" id="customerId" th:field="*{customerId}" required/><br/>
+
+        <label for="quoteDate">Ngày Khảo Sát:</label>
+        <input type="datetime-local" id="quoteDate" th:field="*{quoteDate}" required/><br/>
+
+        <label for="totalAmount">Tổng Số Tiền:</label>
+        <input type="number" step="0.01" id="totalAmount" th:field="*{totalAmount}" required/><br/>
+
+        <br/>
+
+        <button type="submit">Gửi Khảo Sát</button>
+    </form>
+</body>
+</html>
