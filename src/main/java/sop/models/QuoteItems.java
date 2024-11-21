@@ -15,6 +15,8 @@ public class QuoteItems {
     private LocalDateTime createdAt;
     private String notes;
 
+    public boolean selected;
+
     // Constructors
     public QuoteItems() {
         // Default constructor
@@ -98,6 +100,13 @@ public class QuoteItems {
 
     public String getNotes() {
         return notes;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public void setNotes(String notes) {

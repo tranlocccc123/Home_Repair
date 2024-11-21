@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import jakarta.servlet.http.HttpServletRequest;
 import sop.models.Contracts;
@@ -26,7 +27,10 @@ import sop.models.QuoteItems;
 import sop.models.Quotes;
 import sop.models.Services;
 import sop.models.Users;
+import sop.modelviews.QuoteItemsWrapper;
 import sop.repositories.*;
+
+import java.sql.Timestamp;
 
 import sop.utils.SecurityUtility;
 
@@ -48,6 +52,10 @@ public class ClientController {
 	QuotesRepository repQuo;
 	@Autowired 
 	ContractRepository repCon;
+	@Autowired
+	QuoteItemRepository quoteItemRepository;
+	@Autowired
+	ContractRepository contractRepository;
 
 	@GetMapping("/login")
 	public String loginclient() {
@@ -301,7 +309,7 @@ public class ClientController {
 	public String getquotes(HttpServletRequest request, Model model) {
 	    //String username = (String) request.getSession().getAttribute("username");
 	    //Users user = repAuth.findByUsername(username);
-	    List<QuoteItems> listQuoteItem = repQuo.getQuoteItem(1);
+	    List<QuoteItems> listQuoteItem = quoteItemRepository.getQuoteItem(1);
 
 	    if (listQuoteItem != null && listQuoteItem.size() > 0) {
 			QuoteItemsWrapper quoteItemsWrapper = new QuoteItemsWrapper();
