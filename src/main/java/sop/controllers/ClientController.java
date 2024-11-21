@@ -67,6 +67,7 @@ public class ClientController {
 			HttpServletRequest request) {
 		Logger log = Logger.getGlobal();
 		log.info("Attempted login by user: " + username);
+		Users user = repAuth.findByUsername(username);
 
 		String encryptedPassword = repAuth.findPasswordByUsername(username);
 		Integer Role = repAuth.findUserTypeByUsername(username);
@@ -74,6 +75,7 @@ public class ClientController {
 		if (encryptedPassword != null && SecurityUtility.compareBcrypt(encryptedPassword, password)) {
 
 			request.getSession().setAttribute("username", username);
+			request.getSession().setAttribute("userid", user.getUserId());
 
 			if (Role == 0) {
 				return "redirect:/admin/index";
@@ -363,12 +365,78 @@ public class ClientController {
 			return "Clients/getcontract";
 		}
 		else
-			return "Clients/getinfoquote/" + employeeId;
+			return "Clients/getcontract";
 	}
 	
 	@PostMapping("/signcontract")
-	public String signcontract(@ModelAttribute("contractId") int contractId,
-									 Model model) {
+	public String signcontract(@ModelAttribute("contractId") int contractId, Model model)
+	{
+		List<Contracts> listContract =contractRepository.getContracts(contractId);
+		if (listContract.size() > 0)
+		{
+			Contracts contract = listContract.get(0);
+			contract.setStatus("Signed");
+			contract.setSignDate(Timestamp.valueOf(LocalDateTime.now()));
+			contract.setPaymentStages("SIGNED");
+			contractRepository.updateContract(contract);
+			return "Clients/getcontract";
+		}
+		return "Clients/getcontract";
+	}
+
+	
+	@GetMapping("/search")
+	public String search(Model model, HttpServletRequest request,
+						@RequestParam(name = "keyword", required = false) String keyword) {
+		// int employeeId = (int) request.getSession().getAttribute("userid");
+		// String username = (String) request.getSession().getAttribute("username");
+
+		List<Services> listService = repSer.findAll();
+		List<Services> listKeywordService = listService.stream()
+				.filter(ser -> ser.getServiceName().contains(keyword))
+				.collect(Collectors.toList());
+		
+		// List<Services> services = repSer.findAllPaginated(page, size);
+		List<Images> lsImage = repIm.findAll();
+		String username = (String) request.getSession().getAttribute("username");
+		if (username != null) {
+			model.addAttribute("username", username);
+			model.addAttribute("isLoggedIn", true);
+		} else {
+			model.addAttribute("isLoggedIn", false);
+		}
+		for (Services service : listKeywordService) {
+			boolean hasMainImage = false;
+			for (Images image : lsImage) {
+				if (image.getServiceID() == service.getServiceId() && image.getMainStatus() == 1) {
+					hasMainImage = true;
+					break;
+				}
+			}
+			if (!hasMainImage) {
+				Images noImage = new Images();
+				noImage.setServiceID(service.getServiceId());
+				noImage.setImageName("noimage.jpg");
+				noImage.setMainStatus(1);
+				lsImage.add(noImage);
+			}
+		}
+		// Get total number of services for pagination calculation
+		int totalServices = listKeywordService.size();//services.size();
+		int totalPages = (int) Math.ceil((double) totalServices / 6);
+
+		// Add attributes to the model
+		model.addAttribute("service", listKeywordService);
+		model.addAttribute("lsImage", lsImage);
+		model.addAttribute("currentPage", 1);
+		model.addAttribute("totalPages", totalPages);
+				
+		return "Clients/index";
+	}
+	
+	
+	@PostMapping("/payment")
+	public String payment(@ModelAttribute("contractId") int contractId, Model model) {
 
 		Contracts contract = contractRepository.getContracts(contractId).get(0);
 		contract.setStatus("Signed");
