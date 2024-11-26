@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import jakarta.servlet.http.HttpServletRequest;
 import sop.models.Contracts;
 import sop.models.Images;
+import sop.models.Payment;
 import sop.models.QuoteItems;
 import sop.models.Quotes;
 import sop.models.Services;
@@ -56,6 +57,8 @@ public class ClientController {
 	QuoteItemRepository quoteItemRepository;
 	@Autowired
 	ContractRepository contractRepository;
+	@Autowired
+	PaymentRepository paymentRepository;
 
 	@GetMapping("/login")
 	public String loginclient() {
@@ -439,25 +442,23 @@ public class ClientController {
 	public String payment(@ModelAttribute("contractId") int contractId,
 						@ModelAttribute("deposit") double deposit, Model model) {
 
-		List<Contracts> listContract = contractRepository.getContractsById(contractId);
-		if (listContract != null && listContract.size() > 0)
-		{
-			Contracts contract = listContract.get(0);
-			double remainDeposit = contract.getDeposit();
-			// remainDeposit -= deposit;
-			// contract.setDeposit(remainDeposit);
-			// contractRepository.saveContract(contract);
+		List<Payment> listpayment = paymentRepository.getPaymentById(contractId);
+		return "Common/success/" + listpayment.size();
+
+		// List<Contracts> listContract = contractRepository.getContractsById(contractId);
+		// if (listContract != null && listContract.size() > 0)
+		// {
+		// 	Contracts contract = listContract.get(0);
+		// 	double remainDeposit = contract.getDeposit();
+		// 	remainDeposit -= deposit;
+		// 	contract.setDeposit(remainDeposit);
+		// 	contractRepository.saveContract(contract);
 			
-			model.addAttribute("message", "Payment contract Success");
-			model.addAttribute("redirectUrl", "/client/getcontract");
-			return "Common/success/" + remainDeposit +"/" + deposit;
-		}
-		return "/client/" + contractId;
-		// contract.setStatus("Signed");
-		// contract.setSignDate(Timestamp.valueOf(LocalDateTime.now()));
-		// contract.setPaymentStages("SIGNED");
-		// contractRepository.updateContract(contract);
-		// return "Clients/getcontract";
+		// 	model.addAttribute("message", "Payment contract Success");
+		// 	model.addAttribute("redirectUrl", "/client/getcontract");
+		// 	return "Common/success/" + remainDeposit +"/" + deposit;
+		// }
+		// return "/client/" + contractId;
 	}
 
 
