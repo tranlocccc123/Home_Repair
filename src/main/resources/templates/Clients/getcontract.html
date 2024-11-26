@@ -134,11 +134,35 @@
 						</br>
         <!-- <button type="submit" onclick="setFormAction('@{/client/signcontract}')">Sign Contract</button>
 		<button type="submit" onclick="setFormAction('@{/client/payment}')">Payment</button> -->
-		<button type="submit" onclick="submitForm('@{client/signcontract}')">Sign Contract</button>
+		<div th:if="${contract.status != 'Signed'}">
+			<button type="submit" onclick="submitForm('@{client/signcontract}')">Sign Contract</button>
+		</div>
 		<!-- Nút Sign -->
-		<button type="submit" onclick="submitForm('/client/sign')">Sign</button>
     </form>
-    
+	</br>
+	<div th:if="${contract.status == 'Signed'}">
+		<form th:action="@{/client/payment}" th:object="${contract}" method="post">
+			<div class="form-group">
+				<label for="deposit">Total Amount:</label>
+				<span th:text="*{deposit}"></span>
+				<input type="hidden" th:field="*{deposit}" />
+			</div>
+			<div class="form-group">
+				<label for="deposit">Payment:</label>
+				<span th:text="*{deposit / 5}"></span>
+				<input type="hidden" th:field="*{deposit}" />
+			</div>
+			<div class="form-group">
+				<label for="dep">Remaining Amount:</label>
+				<span th:text="*{deposit - deposit / 5}"></span>
+				<input type="hidden" th:field="*{deposit}" />
+			</div>
+			<div class="form-group">
+				<input type="hidden" th:field="*{contractId}" />
+			</div>
+			<button type="submit">Payment</button>
+		</form>
+	</div>
     <h4>
         <span th:text="${successMessage}" style="color:red;"></span>
     </h4>

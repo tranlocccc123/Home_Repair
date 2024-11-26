@@ -436,14 +436,28 @@ public class ClientController {
 	
 	
 	@PostMapping("/payment")
-	public String payment(@ModelAttribute("contractId") int contractId, Model model) {
+	public String payment(@ModelAttribute("contractId") int contractId,
+						@ModelAttribute("deposit") double deposit, Model model) {
 
-		Contracts contract = contractRepository.getContracts(contractId).get(0);
-		contract.setStatus("Signed");
-		contract.setSignDate(Timestamp.valueOf(LocalDateTime.now()));
-		contract.setPaymentStages("SIGNED");
-		contractRepository.updateContract(contract);
-		return "Clients/getcontract";
+		List<Contracts> listContract = contractRepository.getContractsById(contractId);
+		if (listContract != null && listContract.size() > 0)
+		{
+			Contracts contract = listContract.get(0);
+			double remainDeposit = contract.getDeposit();
+			// remainDeposit -= deposit;
+			// contract.setDeposit(remainDeposit);
+			// contractRepository.saveContract(contract);
+			
+			model.addAttribute("message", "Payment contract Success");
+			model.addAttribute("redirectUrl", "/client/getcontract");
+			return "Common/success/" + remainDeposit +"/" + deposit;
+		}
+		return "/client/" + contractId;
+		// contract.setStatus("Signed");
+		// contract.setSignDate(Timestamp.valueOf(LocalDateTime.now()));
+		// contract.setPaymentStages("SIGNED");
+		// contractRepository.updateContract(contract);
+		// return "Clients/getcontract";
 	}
 
 

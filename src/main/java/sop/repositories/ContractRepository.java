@@ -44,4 +44,10 @@ public class ContractRepository {
 		String sql = "select * from tbl_contracts where UserID=?";
 		return db.query(sql, new Object[]{userId} ,new Contract_mapper());
 	}
+
+	@SuppressWarnings("deprecation")
+    public List<Contracts> getContractsById(int contractId) {
+		String sql = "select * from tbl_contracts where contractId=?";
+		return db.query(sql, new Object[]{contractId} ,new Contract_mapper());
+	}
 }
