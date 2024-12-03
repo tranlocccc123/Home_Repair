@@ -24,7 +24,7 @@ public class PaymentRepository {
 
     @SuppressWarnings("deprecation")
     public List<Payment> getPaymentById(int paymentId) {
-		String sql = "select * from tbl_contracts where contractId=?";
+		String sql = "select * from tbl_payment where contractId=?";
 		return db.query(sql, new Object[]{paymentId} ,new Payment_Mapper());
 	}
 

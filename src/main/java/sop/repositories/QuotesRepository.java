@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import sop.models.*;
-import sop.models.Services;
 import sop.modelviews.*;
 
 @Repository
@@ -27,6 +26,13 @@ public class QuotesRepository {
 		   String sql = "SELECT * FROM tbl_quotes where EmployeeID = 0 ";
 		return db.query(sql, new Quotes_mapper());
 	}
+
+    @SuppressWarnings("deprecation")
+    public List<Quotes> getQuoteItemWithCustomer(int customerId) {
+		String sql = "select * from tbl_quotes where CustomerID=?";
+		return db.query(sql, new Object[]{customerId} ,new Quotes_mapper());
+	}
+    
 	public List<Quotes> findAll() {
         String sql = "SELECT * FROM tbl_quotes";
         return db.query(sql, new Quotes_mapper());

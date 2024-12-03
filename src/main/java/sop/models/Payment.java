@@ -81,4 +81,18 @@ public class Payment {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public Payment copy()
+    {
+        Payment clone = new Payment();
+        clone.setNamePayment(namePayment);
+        clone.setContractId(contractId);
+        clone.setAmountMoney(amountMoney);
+        clone.setCreatedAt(createdAt);
+        clone.setStatus(status);
+        clone.setPaymentStage(paymentStage);
+        clone.setStageDescription(stageDescription);
+        return clone;
+    }
+
 }

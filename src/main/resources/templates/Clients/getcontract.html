@@ -132,15 +132,13 @@
 							</tbody>
 						</table>
 						</br>
-        <!-- <button type="submit" onclick="setFormAction('@{/client/signcontract}')">Sign Contract</button>
-		<button type="submit" onclick="setFormAction('@{/client/payment}')">Payment</button> -->
-		<div th:if="${contract.status != 'Signed'}">
+		<div th:if="${contract.status != 'SIGNED'}">
 			<button type="submit" onclick="submitForm('@{client/signcontract}')">Sign Contract</button>
 		</div>
-		<!-- Nút Sign -->
+		<!-- Nút Payment -->
     </form>
 	</br>
-	<div th:if="${contract.status == 'Signed'}">
+	<div th:if="${contract.status == 'SIGNED'}">
 		<form th:action="@{/client/payment}" th:object="${contract}" method="post">
 			<div class="form-group">
 				<label for="deposit">Total Amount:</label>
@@ -162,7 +160,17 @@
 			</div>
 			<button type="submit">Payment</button>
 		</form>
+		<!-- </form> -->
+	</br>
+	<div th:if="${contract.status == 'SIGNED'}">
+		<form th:action="@{/client/comfirmcomplete}" th:object="${contract}" method="post">
+			<div class="form-group">
+				<input type="hidden" th:field="*{contractId}" />
+			</div>
+			<button type="submit">Confirm Complete</button>
+		</form>
 	</div>
+
     <h4>
         <span th:text="${successMessage}" style="color:red;"></span>
     </h4>

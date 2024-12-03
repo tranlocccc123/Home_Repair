@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -312,21 +314,27 @@ public class ClientController {
 	}
 	@GetMapping("/getquotes")
 	public String getquotes(HttpServletRequest request, Model model) {
-	    //String username = (String) request.getSession().getAttribute("username");
-	    //Users user = repAuth.findByUsername(username);
-	    List<QuoteItems> listQuoteItem = quoteItemRepository.getQuoteItem(1);
 
-	    if (listQuoteItem != null && listQuoteItem.size() > 0) {
-			QuoteItemsWrapper quoteItemsWrapper = new QuoteItemsWrapper();
-        	quoteItemsWrapper.setQuotes(listQuoteItem);
+		int customerId = (int) request.getSession().getAttribute("userid");
+		List<Quotes> quotes = repQuo.getQuoteItemWithCustomer(customerId);
+		if (quotes != null && !quotes.isEmpty())
+		{
+			Quotes quote = quotes.get(0);
+			List<QuoteItems> listQuoteItem = quoteItemRepository.getQuoteItem(quote.getQuoteId());
+			if (listQuoteItem != null && listQuoteItem.size() > 0) {
+				QuoteItemsWrapper quoteItemsWrapper = new QuoteItemsWrapper();
+				quoteItemsWrapper.setQuotes(listQuoteItem);
 
-	        model.addAttribute("quotes", listQuoteItem);
-			model.addAttribute("quotesWrapper", quoteItemsWrapper);
-	        return "Clients/GetQuote"; // The name of the HTML template
-	    } else {
-	        model.addAttribute("errorMessage", "User not found!");
-	        return "Clients/GetQuote"; // Redirect to an error or info page
-	    }
+				model.addAttribute("quotes", listQuoteItem);
+				model.addAttribute("quotesWrapper", quoteItemsWrapper);
+				return "Clients/GetQuote";
+			} else {
+				model.addAttribute("errorMessage", "User not found!");
+				return "Clients/GetQuote";
+			}
+		}
+		model.addAttribute("errorMessage", "User not found!");
+		return "Clients/GetQuote";
 	}
 
 	String s ="";
@@ -352,6 +360,10 @@ public class ClientController {
 	
 	@GetMapping("/getcontracts")
 	public String getinfoquotes(Model model, HttpServletRequest request) {
+		if (request.getSession().getAttribute("userid") == null)
+		{
+			return "Clients/login";
+		}
 		int employeeId = (int) request.getSession().getAttribute("userid");
 		String username = (String) request.getSession().getAttribute("username");
 
@@ -374,17 +386,21 @@ public class ClientController {
 	@PostMapping("/signcontract")
 	public String signcontract(@ModelAttribute("contractId") int contractId, Model model)
 	{
-		List<Contracts> listContract =contractRepository.getContracts(contractId);
+		List<Contracts> listContract =contractRepository.getContractsById(contractId);
 		if (listContract.size() > 0)
 		{
 			Contracts contract = listContract.get(0);
-			contract.setStatus("Signed");
+			contract.setStatus("SIGNED");
 			contract.setSignDate(Timestamp.valueOf(LocalDateTime.now()));
-			contract.setPaymentStages("SIGNED");
+			contract.setPaymentStages("0");
 			contractRepository.updateContract(contract);
-			return "Clients/getcontract";
+			
+			model.addAttribute("message", "Update Contract Success");
+			model.addAttribute("redirectUrl", "/client/getcontracts");
+			return "Common/success";
+			// return "Clients/getcontract";
 		}
-		return "Clients/getcontract";
+		return "Clients/getcontracts/" + contractId;
 	}
 
 	
@@ -443,23 +459,52 @@ public class ClientController {
 						@ModelAttribute("deposit") double deposit, Model model) {
 
 		List<Payment> listpayment = paymentRepository.getPaymentById(contractId);
-		return "Common/success/" + listpayment.size();
+		if (listpayment.size() == 5)
+		{
+			model.addAttribute("message", "Contract have already payment done");
+			model.addAttribute("redirectUrl", "/client/getcontracts");
+			return "Common/success";
+		}
+		else if (listpayment.size() == 0)
+		{
+			Payment payment = new Payment(contractId, "Lan1", "1");
+			paymentRepository.addPayment(payment);
+		}
+		else
+		{
+			Optional<Payment> maxStagePay = listpayment.stream()
+							.max(Comparator.comparingInt(payment -> Integer.parseInt(payment.getPaymentStage())));
+			if (maxStagePay.isPresent())
+			{
+				int newStage = Integer.parseInt(maxStagePay.get().getPaymentStage());
+				Payment payment = maxStagePay.get().copy();
+				payment.setPaymentStage(newStage + 1 + "");
+				paymentRepository.addPayment(payment);
+				
+				model.addAttribute("message", "Payment Success");
+				model.addAttribute("redirectUrl", "/client/getcontracts");
+				return "Common/success";
 
-		// List<Contracts> listContract = contractRepository.getContractsById(contractId);
-		// if (listContract != null && listContract.size() > 0)
-		// {
-		// 	Contracts contract = listContract.get(0);
-		// 	double remainDeposit = contract.getDeposit();
-		// 	remainDeposit -= deposit;
-		// 	contract.setDeposit(remainDeposit);
-		// 	contractRepository.saveContract(contract);
-			
-		// 	model.addAttribute("message", "Payment contract Success");
-		// 	model.addAttribute("redirectUrl", "/client/getcontract");
-		// 	return "Common/success/" + remainDeposit +"/" + deposit;
-		// }
-		// return "/client/" + contractId;
+			}
+		}
+		return "Common/success" + listpayment.size() +"/" + contractId;
+
 	}
 
 
+	@PostMapping("/comfirmcomplete")
+	public String comfirmcomplete(@ModelAttribute("contractId") int contractId,Model model) {
+
+		List<Contracts> listcontract = contractRepository.getContractsById(contractId);
+		if (listcontract.size() > 0)
+		{
+			Contracts contract = listcontract.get(0);
+			contract.setStatus("COMPLETE");
+			contractRepository.updateContract(contract);
+			model.addAttribute("message", "Confirm Complete Success");
+			model.addAttribute("redirectUrl", "/client/getcontracts");
+			return "Common/success";
+		}
+		return "Common/success/";
+	}
 }
