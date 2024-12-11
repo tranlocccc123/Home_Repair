@@ -55,11 +55,24 @@ public class QuotesRepository {
         String sql = "UPDATE tbl_quotes SET EmployeeID = ?, Status = ? WHERE QuoteID = ?";
         return db.update(sql, quote.getEmployeeId(), quote.getStatus(), quote.getQuoteId());
     }
+    public int updatestatus(Quotes quote) {
+        String sql = "UPDATE tbl_quotes SET Status = ? WHERE QuoteID = ?";
+        return db.update(sql, quote.getStatus(), quote.getQuoteId());
+    }
 
     // Delete a quote by ID
     public int deleteById(int id) {
         String sql = "DELETE FROM tbl_quotes WHERE QuoteID = ?";
         return db.update(sql, id);
+    }
+    public Quotes getQuote(int quoteid) {
+ 		String str_query = String.format("select * from tbl_quotes where QuoteID=?");
+ 		return db.queryForObject(str_query, new Quotes_mapper(), new Object[] { quoteid });
+
+ 	}
+    public List<Quotes> findByEmp(int id) {
+        String sql = "SELECT * FROM tbl_quotes WHERE EmployeeID = ?";
+        return db.query(sql, new Quotes_mapper(), id);
     }
     
 }

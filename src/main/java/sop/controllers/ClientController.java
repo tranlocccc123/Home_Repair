@@ -297,8 +297,10 @@ public class ClientController {
 	@PostMapping("/sendrequest")
 	public String saveQuote(@ModelAttribute("quote") Quotes quote, BindingResult result, Model model,
 			HttpServletRequest request) {
-		if (result.hasErrors()) {
-			return "Clients/sendrequest";
+		
+		if (request.getSession().getAttribute("userid") == null)
+		{
+			return "Clients/login";
 		}
 		String username = (String) request.getSession().getAttribute("username");
 		Users user = repAuth.findByUsername(username);
@@ -362,7 +364,7 @@ public class ClientController {
 	public String getinfoquotes(Model model, HttpServletRequest request) {
 		if (request.getSession().getAttribute("userid") == null)
 		{
-			return "Clients/login";
+			return "Clients/LoginClient";
 		}
 		int employeeId = (int) request.getSession().getAttribute("userid");
 		String username = (String) request.getSession().getAttribute("username");

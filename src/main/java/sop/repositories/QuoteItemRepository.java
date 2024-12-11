@@ -6,7 +6,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import sop.models.QuoteItems;
+import sop.models.Quotes;
 import sop.modelviews.QuoteItem_mapper;
+import sop.modelviews.Quotes_mapper;
 
 @Repository
 public class QuoteItemRepository {
@@ -27,7 +29,12 @@ public class QuoteItemRepository {
 		String sql = "select * from tbl_quoteItems where QuoteID=?";
 		return db.query(sql, new Object[]{quoteid} ,new QuoteItem_mapper());
 	}
-
+	public QuoteItems getItemQuobyID(int id) {
+		String sql="select * from tbl_quoteItems where QuoteID=?";
+		db.query(sql,new QuoteItem_mapper(),new Object[] {id});
+		return null;
+	}
+	
     public List<QuoteItems> getAllQuoteItem() {
         String sql = "SELECT * FROM tbl_quoteItems";
 		return db.query(sql, new QuoteItem_mapper());
@@ -62,5 +69,10 @@ public class QuoteItemRepository {
         Integer count = db.queryForObject(checkSql, Integer.class, quoteId);
         return count != null && count > 0;
     }
+    public QuoteItems getQuoteI(int quoteid) {
+ 		String str_query = String.format("select * from tbl_quoteItems where QuoteID=?");
+ 		return db.queryForObject(str_query, new QuoteItem_mapper(), new Object[] { quoteid });
+
+ 	}
 }
 
