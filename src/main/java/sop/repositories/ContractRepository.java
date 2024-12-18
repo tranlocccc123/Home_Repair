@@ -15,7 +15,7 @@ public class ContractRepository {
 	JdbcTemplate db;
 	
 	public List<Contracts> findByIdUser(int id) {
-		String sql = "SELECT * FROM tbl_contracts where UserID =?";
+		String sql = "SELECT * FROM tbl_contracts c inner join tbl_quotes q on c.QuoteID = q.QuoteID where EmployeeID =?";
 		 return db.query(sql, new Contract_mapper(), new Object[]{id});
 	}
 	public ContracItems findbyContractID(int id) {
