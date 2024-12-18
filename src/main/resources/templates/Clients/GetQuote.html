@@ -85,6 +85,7 @@
 									<th>Description</th>
 									<th>Quantity</th>
 									<th>Price</th>
+									<th>Fixed Price</th>
 									<th>Day Created</th>
 									<th>Đã chọn</th>
 									<th>Choose Service</th>
@@ -104,11 +105,14 @@
 									<input type="hidden" th:field="*{quotes[__${iter.index}__].quantity}" />
 									<td th:text="${quote.unitPrice}">Price</td>
 									<input type="hidden" th:field="*{quotes[__${iter.index}__].unitPrice}" />
+									<td class="column-select">
+										<input type="text" th:field="*{quotes[__${iter.index}__].fixedPrice}" />
+									</td>
 									<td th:text="${quote.createdAt}">Created At</td>
 									<input type="hidden" th:field="*{quotes[__${iter.index}__].createdAt}" />
-									<td th:text="${quote.notes != null ? 'YES' : 'NO'}">DA</td>
+									<td th:text="${quote.notes != null and quote.notes != 'NULL' ? 'Yes' : 'No'}">DA</td>
 									<td class="column-select">
-											<input type="checkbox" th:field="*{quotes[__${iter.index}__].selected}" th:checked="true"/>
+										<input type="checkbox" th:field="*{quotes[__${iter.index}__].selected}" checked/>
 									</td>
 								</tr>
 							</tbody>

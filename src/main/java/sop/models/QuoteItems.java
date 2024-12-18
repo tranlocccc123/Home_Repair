@@ -16,6 +16,7 @@ public class QuoteItems {
     private String notes;
 
     public boolean selected;
+    public int fixedPrice;
 
     // Constructors
     public QuoteItems() {
@@ -111,6 +112,15 @@ public class QuoteItems {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public int getfixedPrice(){
+        return fixedPrice;
+    }
+
+    public void setFixedPrice(int price)
+    {
+        fixedPrice = price;
     }
 
     // toString method for easy printing

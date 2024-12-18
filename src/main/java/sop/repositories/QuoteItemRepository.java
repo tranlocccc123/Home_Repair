@@ -40,7 +40,6 @@ public class QuoteItemRepository {
         // String sql = "INSERT INTO tbl_quoteItems (QuoteID, ServiceID, ItemDescription, Quantity, UnitPrice, CreatedAt, Notes) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String sql = "UPDATE tbl_quoteItems SET QuoteID = ?, ServiceID = ?, ItemDescription = ?, Quantity = ?, UnitPrice = ?, CreatedAt = ?, Notes = ? WHERE QuoteItemID = ?";
 
-        //+ " ON DUPLICATE KEY UPDATE QuoteID=?, ServiceID=?, ItemDescription=?, Quantity=?, UnitPrice=?, TotalPrice=?, CreatedAt=?, Notes=?";
          db.update(sql,
          quoteItem.getQuoteId(),
          quoteItem.getServiceId(),

@@ -322,6 +322,10 @@ public class ClientController {
 			Quotes quote = quotes.get(0);
 			List<QuoteItems> listQuoteItem = quoteItemRepository.getQuoteItem(quote.getQuoteId());
 			if (listQuoteItem != null && listQuoteItem.size() > 0) {
+				for (QuoteItems item : listQuoteItem) {
+					item.selected = item.getNotes() != null && !item.getNotes().equals("NULL");
+					item.fixedPrice = item.getNotes() != null && !item.getNotes().equals("NULL") ? Integer.parseInt(item.getNotes()) : item.getUnitPrice().intValue();
+				}
 				QuoteItemsWrapper quoteItemsWrapper = new QuoteItemsWrapper();
 				quoteItemsWrapper.setQuotes(listQuoteItem);
 
@@ -337,17 +341,13 @@ public class ClientController {
 		return "Clients/GetQuote";
 	}
 
-	String s ="";
+	String mess = "";
 
 	@PostMapping("/selectcategory")
 	public String selectcategory(@ModelAttribute("quotesWrapper") QuoteItemsWrapper quotesWrapper, Model model)
 	{
-		List<QuoteItems> selectedQuotes = quotesWrapper.getQuotes().stream()
-											.filter(QuoteItems::isSelected)
-											.collect(Collectors.toList());
-        selectedQuotes.forEach(quoteItem -> {
-            quoteItem.setNotes("Đã chọn");
-			// s += "/Q_" + quoteItem.getQuoteId() +"_" +quoteItem.getServiceId() +"_" +quoteItem.getUnitPrice() +"_";
+        quotesWrapper.getQuotes().forEach(quoteItem -> {
+            quoteItem.setNotes(quoteItem.selected && quoteItem.fixedPrice > 0? quoteItem.fixedPrice + "" : "NULL");
 			quoteItemRepository.saveQuoteItem(quoteItem);
 		});
 		
@@ -467,8 +467,12 @@ public class ClientController {
 		}
 		else if (listpayment.size() == 0)
 		{
-			Payment payment = new Payment(contractId, "Lan1", "1");
+			Payment payment = new Payment(contractId, "Lan1", "1", "1");
 			paymentRepository.addPayment(payment);
+			
+			model.addAttribute("message", "Payment Success");
+			model.addAttribute("redirectUrl", "/client/getcontracts");
+			return "Common/success";
 		}
 		else
 		{
@@ -487,7 +491,7 @@ public class ClientController {
 
 			}
 		}
-		return "Common/success" + listpayment.size() +"/" + contractId;
+		return "Common/success";
 
 	}
 
