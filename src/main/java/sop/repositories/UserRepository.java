@@ -16,7 +16,10 @@ import sop.models.Users;
 public class UserRepository {
 	@Autowired
 	JdbcTemplate db;
-
+	public List<Users> findAllCus() {
+		String sql = "SELECT * FROM tbl_users where Role =2";
+		return db.query(sql, new User_mapper());
+	}
 	public Users findById(int userId) {
 		String sql = "SELECT * FROM tbl_users WHERE UserID = ?";
 		try {

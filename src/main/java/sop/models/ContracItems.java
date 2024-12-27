@@ -1,6 +1,7 @@
 package sop.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ContracItems {
     private int contractItemID;
@@ -58,4 +59,5 @@ public class ContracItems {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
 }

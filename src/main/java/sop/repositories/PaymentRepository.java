@@ -27,5 +27,9 @@ public class PaymentRepository {
 		String sql = "select * from tbl_payment where contractId=?";
 		return db.query(sql, new Object[]{paymentId} ,new Payment_Mapper());
 	}
+    public List<Payment> getAllPay(){
+    	String sql ="select * from tbl_payment ";
+    	return db.query(sql, new Payment_Mapper());
+    }
 
 }

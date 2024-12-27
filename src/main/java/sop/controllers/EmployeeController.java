@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpServletRequest;
 import sop.models.*;
 import sop.repositories.AuthRepository;
+import sop.repositories.ContractItem;
 import sop.repositories.ContractRepository;
 import sop.repositories.EmployeeRepository;
 import sop.repositories.ImageRepository;
@@ -53,6 +54,8 @@ public class EmployeeController {
 	QuotesRepository repQuo;
 	@Autowired
 	QuoteItemRepository repQuoItem;
+	@Autowired
+	ContractItem repConItem;
 
 	public static String generateRandomString(int length) {
 		String randomUUID = UUID.randomUUID().toString().replaceAll("-", "");
@@ -199,6 +202,22 @@ public class EmployeeController {
 		return "Employee/QuotesEmp";
 
 	}
-
+	@GetMapping("/ContractSign")
+	public String getContractSign() {	
+		return "Employee/ContractSign";
+	}
+	 @GetMapping("/contractitems/{contractCode}")
+	
+	    public String getContractItemsByCode(@PathVariable("contractCode") String contractCode, Model model) {
+	        // Lấy các mục hợp đồng từ service
+	        List<ContracItems> contractItems = repConItem.getItemsByContractCode(contractCode);
+	        
+	        // Thêm dữ liệu vào model để truyền cho view
+	        model.addAttribute("contractItems", contractItems);
+	        model.addAttribute("contractCode", contractCode);
+	        
+	        // Trả về tên view, ví dụ là "contractItems"
+	        return "Employee/contractItems";  
+	    }
 	
 }

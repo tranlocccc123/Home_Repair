@@ -75,7 +75,7 @@
 								<td th:text="${user.fullName}"></td>
 								<td th:text="${user.email}"></td>
 								<td th:text="${user.phoneNumber}"></td>
-								<td th:text="${user.status}"></td>
+								<td th:text="${user.status == 1 ? 'Active' : 'Inactive'}"></td>
 								<td th:text="${user.createdAt}"></td>
 								<td><a href="">Edit</a></td>
 								<td th:if="${user.status == 0}">
@@ -84,7 +84,6 @@
 										<button type="submit">Active</button>
 									</form>
 								</td>
-
 
 							</tr>
 

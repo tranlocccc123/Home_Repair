@@ -164,7 +164,7 @@ table tr:hover {
 								<td th:text="${userIdToFullNameMap1[q.customerId]}"></td>
 								
 								<td
-									th:text="${#temporals.format(q.quoteDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+									th:text="${q.quoteDate}"></td>
 								<td>$<span
 									th:text="${#numbers.formatDecimal(q.totalAmount, 0, 2)}"></span></td>
 								<td th:text="${q.status}"></td>

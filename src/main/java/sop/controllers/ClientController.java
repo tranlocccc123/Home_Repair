@@ -26,6 +26,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import sop.models.Contracts;
 import sop.models.Images;
 import sop.models.Payment;
+import sop.models.Posts;
 import sop.models.QuoteItems;
 import sop.models.Quotes;
 import sop.models.Services;
@@ -61,6 +62,8 @@ public class ClientController {
 	ContractRepository contractRepository;
 	@Autowired
 	PaymentRepository paymentRepository;
+	@Autowired 
+	PostRepository repPo;
 
 	@GetMapping("/login")
 	public String loginclient() {
@@ -509,4 +512,44 @@ public class ClientController {
 		}
 		return "Common/success/";
 	}
+	@GetMapping("/about")
+	public String about() {
+		return "Clients/about";
+	}
+	@GetMapping("/contact")
+	public String contact() {
+		return "Clients/Contact";
+	}
+	@GetMapping("/posts")
+	public String getAllPosts(Model model,HttpServletRequest request) {
+		List<Posts> posts = repPo.getAllPosts();
+		List<Images> lsImage = repIm.findAll();
+		String username = (String) request.getSession().getAttribute("username");
+		if (username != null) {
+			model.addAttribute("username", username);
+			model.addAttribute("isLoggedIn", true);
+		} else {
+			model.addAttribute("isLoggedIn", false);
+		}
+		for (Posts post : posts) {
+			boolean hasMainImage = false;
+			for (Images image : lsImage) {
+				if (image.getPostID() == post.getPostId() && image.getMainStatus() == 1) {
+					hasMainImage = true;
+					break;
+				}
+			}
+			if (!hasMainImage) {
+				Images noImage = new Images();
+				noImage.setPostID(post.getPostId());
+				noImage.setImageName("noimage.jpg");
+				noImage.setMainStatus(1);
+				lsImage.add(noImage);
+			}
+		}
+		model.addAttribute("lsImage", lsImage);
+		model.addAttribute("posts", posts);
+		return "Clients/ListPost"; // Trả về trang list.html cho posts
+	}
+
 }

@@ -8,8 +8,11 @@ public class Posts {
     private String title;
     private String content;
     private Timestamp createdAt;
-
-    // Getters và Setters
+     
+    public Posts() {
+    	
+    }
+    // Getters vƠà Setters
     public int getPostId() {
         return postId;
     }

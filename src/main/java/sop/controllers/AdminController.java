@@ -41,11 +41,15 @@ public class AdminController {
 	@Autowired
 	PostRepository repPost;
 	@Autowired
-	BannerRepository RepBan;
+	BannerRepository repBan;
 	@Autowired
 	QuotesRepository repQuo;
 	@Autowired
 	UserRepository repUser;
+	@Autowired 
+	PaymentRepository repPay;
+	@Autowired 
+	ContractRepository repCon;
 
 	@GetMapping("")
 	public String index() {
@@ -366,10 +370,11 @@ public class AdminController {
 		// Return the name of the HTML template
 		return "Admin/quoteslistAll";
 	}
+
 	@GetMapping("/QuoteItem/{id}")
 	public String getQuoteItem(@PathVariable("id") int id, Model model) {
 		// Find the quote by ID
-		
+
 		Quotes quote = repQuo.findById(id);
 
 		Users user = repUser.findById(quote.getCustomerId());
@@ -387,6 +392,111 @@ public class AdminController {
 		} else {
 			model.addAttribute("error", "Quote not found");
 			return "error"; // Update with the path to your error page
+		}
+	}
+
+	@GetMapping("/banner")
+	public String getbanner(Model model, HttpServletRequest request) {
+		List<sop.models.Banner> banner = repBan.getAllBanners();
+
+		model.addAttribute("banner", banner);
+		return "Admin/BannerList";
+	}
+
+	@GetMapping("/search")
+	public String search(Model model, HttpServletRequest request,
+			@RequestParam(name = "keyword", required = false) String keyword) {
+		
+		List<sop.models.Banner> banners = repBan.getAllBanners();
+		List<Services> listService = repSer.findAll();
+		List<Services> listKeywordService = listService.stream().filter(ser -> ser.getServiceName().contains(keyword))
+				.collect(Collectors.toList());
+
+		// List<Services> services = repSer.findAllPaginated(page, size);
+		List<Images> lsImage = repIm.findAll();
+		String username = (String) request.getSession().getAttribute("username");
+		if (username != null) {
+			model.addAttribute("username", username);
+			model.addAttribute("isLoggedIn", true);
+		} else {
+			model.addAttribute("isLoggedIn", false);
+		}
+		for (sop.models.Banner banner : banners) {
+		    boolean hasMainImage = false;
+		    for (Images image : lsImage) {
+		        if (image.getBannerID() == banner.getBannerId() && image.getMainStatus() == 1) {
+		            hasMainImage = true;
+		            break;
+		        }
+		    }
+		    if (!hasMainImage) {
+		        Images noImage = new Images();
+		        noImage.setBannerID(banner.getBannerId());
+		        noImage.setImageName("noimage.jpg");
+		        noImage.setMainStatus(1);
+		        lsImage.add(noImage);
+		    }
+		}
+
+		// Get total number of services for pagination calculation
+		int totalServices = listKeywordService.size();// services.size();
+		int totalPages = (int) Math.ceil((double) totalServices / 6);
+		// Add attributes to the model
+		model.addAttribute("service", listKeywordService);
+		model.addAttribute("lsImage", lsImage);
+		model.addAttribute("currentPage", 1);
+		model.addAttribute("totalPages", totalPages);
+
+		model.addAttribute("banner", banners);
+		return "Admin/BannerList";
+	}
+	@GetMapping("/Customerlist")
+	public String getCus(HttpServletRequest request, Model model) {
+		List<Users> users = repUser.findAllCus();
+		String username = (String) request.getSession().getAttribute("username");
+		model.addAttribute("users", users);
+		model.addAttribute("username", username);
+		return "Admin/CustomerList";
+	}
+	@GetMapping("/Paymentlist")
+	public String getAllPayment(HttpServletRequest request, Model model) {
+		List<Payment> pay = repPay.getAllPay();
+		String username = (String) request.getSession().getAttribute("username");
+		model.addAttribute("pay",pay);
+		model.addAttribute("username", username);
+		return "Admin/PaymentList";
+	}
+	@GetMapping("/contract")
+	public String getAllContractbyId(HttpServletRequest request, Model model) {
+		String username = (String) request.getSession().getAttribute("username");
+		
+	
+		List<Contracts> lsContract = repCon.getAllContracts();
+		model.addAttribute("lsContract", lsContract);
+		model.addAttribute("username", username);
+		return "Employee/Contract";
+	}
+
+	@GetMapping("/ContractItem/{id}")
+	public String getContractDetails(@PathVariable("id") int id, Model model) {
+		// Find the product by ID
+		ContracItems ContracItems = repCon.findbyContractID(id);
+		if (ContracItems != null) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			String formattedDate = ContracItems.getCreatedAt().format(formatter);
+
+			model.addAttribute("ContracItems", ContracItems);
+			model.addAttribute("formattedCreatedAt", formattedDate);
+
+			// Retrieve images related to the product
+			List<Images> lsImage = repIm.findAll(); // Assuming a method to filter images by productId
+			model.addAttribute("lsImage", lsImage);
+
+			return "Employee/ContractItem";// Assuming Views.PRODUCT_DETAIL is a constant that refers to your Thymeleaf
+											// template
+		} else {
+			model.addAttribute("error", "Product not found");
+			return "error"; // Assuming you have an error view to display when the product is not found
 		}
 	}
 
