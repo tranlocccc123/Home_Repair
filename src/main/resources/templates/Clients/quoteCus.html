@@ -27,43 +27,49 @@
 
 <!-- Template Stylesheet -->
 <link href="/Asset/css/style.css" rel="stylesheet">
-<style>
-</style>
 </head>
 <body>
 	<div class="container-xxl bg-white p-0">
 		<div th:replace="~{Common/Client_layout :: header}"></div>
-		<div>
-			<div class="container-xxl py-5">
-				<div class="container">
-				<h1 class="text-center mb-5">Danh sách bài viết</h1>
-					<div class="row g-5 align-items-center" th:each="post : ${posts}">
-						<div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
-							<div class="about-img position-relative overflow-hidden p-5 pe-0">
-								<img th:each="option : ${lsImage}"
-									th:if="${option.postID == post.postId && option.mainStatus == 1}"
-									th:src="@{/Uploads/{imagename}(imagename=${option.imageName}) }"
-									width="500px" alt="Main Image">
-							</div>
-							<br> <br> <br>
-						</div>
+		<div class="container-xxl py-5">
+			<div class="container">
+				<h2>Your Quotes</h2>
 
-						<div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
-							<h1 class="mb-4" th:text="${post.title}">#1 Place To Find
-								The Perfect Property</h1>
-							<p class="mb-4" th:text="${post.content}">Tempor erat elitr
-								rebum at clita. Diam dolor</p>
-							<a class="btn btn-primary py-3 px-5 mt-3" href="">Read More</a>
-						</div>
+				<!-- Display error message if present -->
+				<div th:if="${error}">
+					<p th:text="${error}" style="color: red;"></p>
+				</div>
 
-					</div>
-
+				<!-- Display quotes if available -->
+				<div th:if="${quote}">
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Quote ID</th>
+								<th>Employee ID</th>
+								<th>Customer ID</th>
+								<th>Quote Date</th>
+								<th>Total Amount</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- Loop through the quotes list -->
+							<tr th:each="q : ${quote}">
+								<td th:text="${q.quoteId}"></td>
+								<td th:text="${q.employeeId}"></td>
+								<td th:text="${q.customerId}"></td>
+								<td th:text="${q.quoteDate}"></td>
+								<td th:text="${q.totalAmount}"></td>
+								<td th:text="${q.status}"></td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 
 			</div>
 		</div>
 	</div>
-
 	<div th:replace="~{Common/Client_layout :: footer}"></div>
 
 </body>

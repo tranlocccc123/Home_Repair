@@ -54,4 +54,11 @@ public class ContractRepository {
 		String sql = "select * from tbl_contracts where contractId=?";
 		return db.query(sql, new Object[]{contractId} ,new Contract_mapper());
 	}
+	
 }
+
+
+
+
+
+

@@ -69,8 +69,8 @@
 						<tbody>
 							<!-- Loop through the users and display them -->
 
-							<tr th:each="user : ${users}">
-								<td></td>
+							<tr th:each="user,iterStat : ${users}">
+								<td  th:text="${iterStat.index + 1}"></td>
 								<td th:text="${user.username}"></td>
 								<td th:text="${user.fullName}"></td>
 								<td th:text="${user.email}"></td>

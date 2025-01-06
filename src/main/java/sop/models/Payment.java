@@ -2,6 +2,7 @@ package sop.models;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 public class Payment {
@@ -19,10 +20,12 @@ public class Payment {
         // Default constructor
     }
 
-    public Payment(int contractId, String namePayment, String status) {
+    public Payment(int contractId, String namePayment, String status, String paymentStage) {
         this.contractId = contractId;
         this.namePayment = namePayment;
         this.status = status;
+        this.setPaymentStage(paymentStage);
+        this.setCreatedAt(Timestamp.from(Instant.now()));
     }
 
     // Getters and Setters

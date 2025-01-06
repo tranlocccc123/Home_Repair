@@ -54,7 +54,7 @@ public class ClientController {
 	UserRepository repUser;
 	@Autowired
 	QuotesRepository repQuo;
-	@Autowired 
+	@Autowired
 	ContractRepository repCon;
 	@Autowired
 	QuoteItemRepository quoteItemRepository;
@@ -62,8 +62,10 @@ public class ClientController {
 	ContractRepository contractRepository;
 	@Autowired
 	PaymentRepository paymentRepository;
-	@Autowired 
+	@Autowired
 	PostRepository repPo;
+	@Autowired
+	BannerRepository repban;
 
 	@GetMapping("/login")
 	public String loginclient() {
@@ -109,6 +111,10 @@ public class ClientController {
 			HttpServletRequest request, Model model) {
 		List<Services> services = repSer.findAllPaginated(page, size);
 		List<Images> lsImage = repIm.findAll();
+
+		List<Images> banner = repban.getImagesByBannerCode();
+		model.addAttribute("banner", banner);
+
 		String username = (String) request.getSession().getAttribute("username");
 		if (username != null) {
 			model.addAttribute("username", username);
@@ -137,6 +143,7 @@ public class ClientController {
 		int totalPages = (int) Math.ceil((double) totalServices / size);
 
 		// Add attributes to the model
+
 		model.addAttribute("service", services);
 		model.addAttribute("lsImage", lsImage);
 		model.addAttribute("currentPage", page);
@@ -151,6 +158,9 @@ public class ClientController {
 		List<Services> services = repSer.findAllPaginated(page, size);
 		List<Images> lsImage = repIm.findAll();
 		String username = (String) request.getSession().getAttribute("username");
+
+		List<Images> banner = repban.getImagesByBannerCode();
+		model.addAttribute("banner", banner);
 		if (username != null) {
 			model.addAttribute("username", username);
 			model.addAttribute("isLoggedIn", true);
@@ -189,6 +199,8 @@ public class ClientController {
 	@GetMapping("/Servicedetail/{id}")
 	public String getProductDetails(HttpServletRequest request, @PathVariable("id") int id, Model model) {
 		String username = (String) request.getSession().getAttribute("username");
+		List<Images> banner = repban.getImagesByBannerCode();
+		model.addAttribute("banner", banner);
 		if (username != null) {
 			model.addAttribute("username", username);
 			model.addAttribute("isLoggedIn", true);
@@ -219,6 +231,8 @@ public class ClientController {
 	public String showEditForm(HttpServletRequest request, Model model) {
 		String username = (String) request.getSession().getAttribute("username");
 		Users user = repAuth.findByUsername(username);
+		List<Images> banner = repban.getImagesByBannerCode();
+		model.addAttribute("banner", banner);
 		if (user != null) {
 			model.addAttribute("user", user);
 			return "Clients/Info"; // This should point to the correct Thymeleaf template.
@@ -231,6 +245,8 @@ public class ClientController {
 	@PostMapping("/edit")
 	public String editUserInfo(@ModelAttribute Users updatedUser, Model model) {
 		try {
+			List<Images> banner = repban.getImagesByBannerCode();
+			model.addAttribute("banner", banner);
 			int userId = updatedUser.getUserId();
 			Users existingUser = repUser.findById(userId);
 			if (existingUser != null) {
@@ -267,6 +283,8 @@ public class ClientController {
 	public String showEditProfileForm(HttpServletRequest request, Model model) {
 		String username = (String) request.getSession().getAttribute("username");
 		Users user = repAuth.findByUsername(username);
+		List<Images> banner = repban.getImagesByBannerCode();
+		model.addAttribute("banner", banner);
 		if (user != null) {
 			model.addAttribute("user", user);
 			return "Clients/Info"; // The name of the HTML template
@@ -292,17 +310,17 @@ public class ClientController {
 
 	@GetMapping("/sendrequest")
 	public String createquote(Model model) {
+		List<Images> banner = repban.getImagesByBannerCode();
+		model.addAttribute("banner", banner);
 		model.addAttribute("quote", new Quotes());
-
 		return "Clients/sendrequest";
 	}
 
 	@PostMapping("/sendrequest")
 	public String saveQuote(@ModelAttribute("quote") Quotes quote, BindingResult result, Model model,
 			HttpServletRequest request) {
-		
-		if (request.getSession().getAttribute("userid") == null)
-		{
+
+		if (request.getSession().getAttribute("userid") == null) {
 			return "Clients/login";
 		}
 		String username = (String) request.getSession().getAttribute("username");
@@ -314,19 +332,51 @@ public class ClientController {
 		quote.setQuoteDate(LocalDateTime.now());
 		repQuo.addQuote(quote);
 		model.addAttribute("message", "Send Service Request Success");
-		model.addAttribute("redirectUrl", "/client/Service");
+		model.addAttribute("redirectUrl", "/client/quotes");
 		return "Clients/success";
 	}
+
+	@GetMapping("/quotes")
+	public String getQuoteByCustomerId(HttpServletRequest request, Model model) {
+		String username = (String) request.getSession().getAttribute("username");
+		if (username != null) {
+			model.addAttribute("username", username);
+			model.addAttribute("isLoggedIn", true);
+		} else {
+			model.addAttribute("isLoggedIn", false);
+		}
+		
+		List<Images> banner = repban.getImagesByBannerCode();
+		model.addAttribute("banner", banner);
+		Users user = repAuth.findByUsername(username);
+		int customerId = user.getUserId();
+		try {
+			// Retrieve the quote for the given customer ID
+			List<Quotes> quote = repQuo.getQuotebyCusID(customerId);
+			model.addAttribute("quote", quote);
+		} catch (Exception e) {
+			// Handle case where no quote is found
+			model.addAttribute("error", "No quote found for the given Customer ID.");
+		}
+		return "Clients/quoteCus"; // Name of the HTML view
+	}
+
 	@GetMapping("/getquotes")
 	public String getquotes(HttpServletRequest request, Model model) {
-
+		List<Images> banner = repban.getImagesByBannerCode();
+		model.addAttribute("banner", banner);
 		int customerId = (int) request.getSession().getAttribute("userid");
 		List<Quotes> quotes = repQuo.getQuoteItemWithCustomer(customerId);
-		if (quotes != null && !quotes.isEmpty())
-		{
+		if (quotes != null && !quotes.isEmpty()) {
 			Quotes quote = quotes.get(0);
 			List<QuoteItems> listQuoteItem = quoteItemRepository.getQuoteItem(quote.getQuoteId());
 			if (listQuoteItem != null && listQuoteItem.size() > 0) {
+				for (QuoteItems item : listQuoteItem) {
+					item.selected = item.getNotes() != null && !item.getNotes().equals("NULL");
+					item.fixedPrice = item.getNotes() != null && !item.getNotes().equals("NULL")
+							? Integer.parseInt(item.getNotes())
+							: item.getUnitPrice().intValue();
+				}
 				QuoteItemsWrapper quoteItemsWrapper = new QuoteItemsWrapper();
 				quoteItemsWrapper.setQuotes(listQuoteItem);
 
@@ -342,64 +392,53 @@ public class ClientController {
 		return "Clients/GetQuote";
 	}
 
-	String s ="";
+	String mess = "";
 
 	@PostMapping("/selectcategory")
-	public String selectcategory(@ModelAttribute("quotesWrapper") QuoteItemsWrapper quotesWrapper, Model model)
-	{
-		List<QuoteItems> selectedQuotes = quotesWrapper.getQuotes().stream()
-											.filter(QuoteItems::isSelected)
-											.collect(Collectors.toList());
-        selectedQuotes.forEach(quoteItem -> {
-            quoteItem.setNotes("Đã chọn");
-			// s += "/Q_" + quoteItem.getQuoteId() +"_" +quoteItem.getServiceId() +"_" +quoteItem.getUnitPrice() +"_";
+	public String selectcategory(@ModelAttribute("quotesWrapper") QuoteItemsWrapper quotesWrapper, Model model) {
+		quotesWrapper.getQuotes().forEach(quoteItem -> {
+			quoteItem.setNotes(quoteItem.selected && quoteItem.fixedPrice > 0 ? quoteItem.fixedPrice + "" : "NULL");
 			quoteItemRepository.saveQuoteItem(quoteItem);
 		});
-		
+
 		model.addAttribute("message", "Update Quote Success");
 		model.addAttribute("redirectUrl", "/client/getquotes");
 		return "Common/success";
 	}
 
-	
-	
 	@GetMapping("/getcontracts")
 	public String getinfoquotes(Model model, HttpServletRequest request) {
-		if (request.getSession().getAttribute("userid") == null)
-		{
+		List<Images> banner = repban.getImagesByBannerCode();
+		model.addAttribute("banner", banner);
+		if (request.getSession().getAttribute("userid") == null) {
 			return "Clients/LoginClient";
 		}
 		int employeeId = (int) request.getSession().getAttribute("userid");
 		String username = (String) request.getSession().getAttribute("username");
 
 		List<Contracts> listContract = repCon.getContracts(employeeId);
-		if (listContract != null && listContract.size() > 0)
-		{
+		if (listContract != null && listContract.size() > 0) {
 			Contracts contract = listContract.get(0);
 			List<QuoteItems> quoteItems = quoteItemRepository.getQuoteItem(contract.getQuoteId());
 			model.addAttribute("contract", contract);
 			model.addAttribute("quoteItems", quoteItems);
 			model.addAttribute("username", username);
 
-
 			return "Clients/getcontract";
-		}
-		else
+		} else
 			return "Clients/getcontract";
 	}
-	
+
 	@PostMapping("/signcontract")
-	public String signcontract(@ModelAttribute("contractId") int contractId, Model model)
-	{
-		List<Contracts> listContract =contractRepository.getContractsById(contractId);
-		if (listContract.size() > 0)
-		{
+	public String signcontract(@ModelAttribute("contractId") int contractId, Model model) {
+		List<Contracts> listContract = contractRepository.getContractsById(contractId);
+		if (listContract.size() > 0) {
 			Contracts contract = listContract.get(0);
 			contract.setStatus("SIGNED");
 			contract.setSignDate(Timestamp.valueOf(LocalDateTime.now()));
 			contract.setPaymentStages("0");
 			contractRepository.updateContract(contract);
-			
+
 			model.addAttribute("message", "Update Contract Success");
 			model.addAttribute("redirectUrl", "/client/getcontracts");
 			return "Common/success";
@@ -408,18 +447,18 @@ public class ClientController {
 		return "Clients/getcontracts/" + contractId;
 	}
 
-	
 	@GetMapping("/search")
 	public String search(Model model, HttpServletRequest request,
-						@RequestParam(name = "keyword", required = false) String keyword) {
+			@RequestParam(name = "keyword", required = false) String keyword) {
 		// int employeeId = (int) request.getSession().getAttribute("userid");
 		// String username = (String) request.getSession().getAttribute("username");
 
 		List<Services> listService = repSer.findAll();
-		List<Services> listKeywordService = listService.stream()
-				.filter(ser -> ser.getServiceName().contains(keyword))
+		List<Images> banner = repban.getImagesByBannerCode();
+		model.addAttribute("banner", banner);
+		List<Services> listKeywordService = listService.stream().filter(ser -> ser.getServiceName().contains(keyword))
 				.collect(Collectors.toList());
-		
+
 		// List<Services> services = repSer.findAllPaginated(page, size);
 		List<Images> lsImage = repIm.findAll();
 		String username = (String) request.getSession().getAttribute("username");
@@ -446,7 +485,7 @@ public class ClientController {
 			}
 		}
 		// Get total number of services for pagination calculation
-		int totalServices = listKeywordService.size();//services.size();
+		int totalServices = listKeywordService.size();// services.size();
 		int totalPages = (int) Math.ceil((double) totalServices / 6);
 
 		// Add attributes to the model
@@ -454,55 +493,48 @@ public class ClientController {
 		model.addAttribute("lsImage", lsImage);
 		model.addAttribute("currentPage", 1);
 		model.addAttribute("totalPages", totalPages);
-				
+
 		return "Clients/index";
 	}
-	
-	
+
 	@PostMapping("/payment")
-	public String payment(@ModelAttribute("contractId") int contractId,
-						@ModelAttribute("deposit") double deposit, Model model) {
+	public String payment(@ModelAttribute("contractId") int contractId, @ModelAttribute("deposit") double deposit,
+			Model model) {
 
 		List<Payment> listpayment = paymentRepository.getPaymentById(contractId);
-		if (listpayment.size() == 5)
-		{
+		if (listpayment.size() == 5) {
 			model.addAttribute("message", "Contract have already payment done");
 			model.addAttribute("redirectUrl", "/client/getcontracts");
 			return "Common/success";
-		}
-		else if (listpayment.size() == 0)
-		{
-			Payment payment = new Payment(contractId, "Lan1", "1");
+		} else if (listpayment.size() == 0) {
+			Payment payment = new Payment(contractId, "Lan1", "1", "1");
 			paymentRepository.addPayment(payment);
-		}
-		else
-		{
+
+			model.addAttribute("message", "Payment Success");
+			model.addAttribute("redirectUrl", "/client/getcontracts");
+			return "Common/success";
+		} else {
 			Optional<Payment> maxStagePay = listpayment.stream()
-							.max(Comparator.comparingInt(payment -> Integer.parseInt(payment.getPaymentStage())));
-			if (maxStagePay.isPresent())
-			{
+					.max(Comparator.comparingInt(payment -> Integer.parseInt(payment.getPaymentStage())));
+			if (maxStagePay.isPresent()) {
 				int newStage = Integer.parseInt(maxStagePay.get().getPaymentStage());
 				Payment payment = maxStagePay.get().copy();
 				payment.setPaymentStage(newStage + 1 + "");
 				paymentRepository.addPayment(payment);
-				
+
 				model.addAttribute("message", "Payment Success");
 				model.addAttribute("redirectUrl", "/client/getcontracts");
 				return "Common/success";
-
 			}
 		}
-		return "Common/success" + listpayment.size() +"/" + contractId;
+		return "Common/success";
 
 	}
 
-
 	@PostMapping("/comfirmcomplete")
-	public String comfirmcomplete(@ModelAttribute("contractId") int contractId,Model model) {
-
+	public String comfirmcomplete(@ModelAttribute("contractId") int contractId, Model model) {
 		List<Contracts> listcontract = contractRepository.getContractsById(contractId);
-		if (listcontract.size() > 0)
-		{
+		if (listcontract.size() > 0) {
 			Contracts contract = listcontract.get(0);
 			contract.setStatus("COMPLETE");
 			contractRepository.updateContract(contract);
@@ -512,16 +544,21 @@ public class ClientController {
 		}
 		return "Common/success/";
 	}
+
 	@GetMapping("/about")
 	public String about() {
 		return "Clients/about";
 	}
+
 	@GetMapping("/contact")
 	public String contact() {
 		return "Clients/Contact";
 	}
+
 	@GetMapping("/posts")
-	public String getAllPosts(Model model,HttpServletRequest request) {
+	public String getAllPosts(Model model, HttpServletRequest request) {
+		List<Images> banner = repban.getImagesByBannerCode();
+		model.addAttribute("banner", banner);
 		List<Posts> posts = repPo.getAllPosts();
 		List<Images> lsImage = repIm.findAll();
 		String username = (String) request.getSession().getAttribute("username");
@@ -550,6 +587,10 @@ public class ClientController {
 		model.addAttribute("lsImage", lsImage);
 		model.addAttribute("posts", posts);
 		return "Clients/ListPost"; // Trả về trang list.html cho posts
+	}
+	@GetMapping("/menu")
+	public String menu() {
+		return "Clients/menu";
 	}
 
 }

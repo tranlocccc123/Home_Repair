@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Menu</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+/* General Reset */
+body {
+	margin: 0;
+	font-family: Arial, sans-serif;
+	background-color: #f4f4f9;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+
+/* User Menu Container */
+.user-menu {
+	background-color: #ffffff;
+	border-radius: 10px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	width: 300px;
+	text-align: center;
+	padding: 20px;
+}
+
+/* User Info Section */
+.user-info {
+	margin-bottom: 20px;
+}
+
+.user-avatar {
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	border: 2px solid #007bff;
+	margin-bottom: 10px;
+}
+
+.user-name {
+	font-size: 18px;
+	font-weight: bold;
+	color: #333333;
+	margin: 0;
+}
+
+.user-role {
+	font-size: 14px;
+	color: #777777;
+	margin: 0;
+}
+
+/* Menu Options */
+.menu-options {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.menu-options li {
+	margin: 10px 0;
+}
+
+.menu-options a {
+	text-decoration: none;
+	font-size: 16px;
+	color: #007bff;
+	font-weight: bold;
+	transition: color 0.3s ease;
+}
+
+.menu-options a:hover {
+	color: #0056b3;
+}
+</style>
+</head>
+<body>
+	<div class="user-menu">
+		<div class="user-info">
+			<img src="https://via.placeholder.com/80" alt="User Avatar"
+				class="user-avatar">
+			<h2 class="user-name">John Doe</h2>
+			<p class="user-role">Administrator</p>
+		</div>
+		<ul class="menu-options">
+			<li><a href="/profile">🧑 Profile</a></li>
+			<li><a href="/settings">⚙️ Settings</a></li>
+			<li><a href="/messages">✉️ Messages</a></li>
+			<li><a href="/logout">🚪 Logout</a></li>
+		</ul>
+	</div>
+</body>
+</html>

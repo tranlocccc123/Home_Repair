@@ -74,5 +74,10 @@ public class QuotesRepository {
         String sql = "SELECT * FROM tbl_quotes WHERE EmployeeID = ?";
         return db.query(sql, new Quotes_mapper(), id);
     }
+    public List<Quotes> getQuotebyCusID(int id) {
+  		String str_query = String.format("select * from tbl_quotes where CustomerID=?");
+  		return db.query(str_query, new Quotes_mapper(), new Object[] { id });
+
+  	}
     
 }

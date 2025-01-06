@@ -42,5 +42,29 @@ public class BannerRepository {
 		String sql = "DELETE FROM tbl_Banner WHERE BannerID = ?";
 		return db.update(sql, bannerId);
 	}
+	public List<Integer> getIDBanners() {
+	    String sql = "SELECT BannerID FROM tbl_Banner";
+	    return db.queryForList(sql, Integer.class); // Returns a list of BannerIDs
+	}
+
+	public List<Images> getImagesByBannerCode() {
+	    // Get the list of BannerIDs
+	    List<Integer> bannerIds = getIDBanners();
+
+	    // List to store all images related to banners
+	    List<Images> imagesList = new ArrayList<>();
+
+	    // Loop through each BannerID and query the tbl_images table
+	    for (Integer bannerId : bannerIds) {
+	        String sql = "SELECT * FROM tbl_images WHERE BannerID = ?";
+	        // Use ImageMapper to map results from the database
+	        List<Images> images = db.query(sql, new Image_mapper(), bannerId);
+	        imagesList.addAll(images); // Add all images to the result list
+	    }
+
+	    return imagesList; // Return the list of all images related to the BannerIDs
+	}
+
+	
 
 }

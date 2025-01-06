@@ -42,22 +42,36 @@
 <script src="/template/js/template.js"></script>
 <script src="/template/js/settings.js"></script>
 <script src="/template/js/todolist.js"></script>
-<style> .form-group { display: flex; align-items: center; margin-bottom: 15px; } .form-group label { flex: 1; max-width: 150px; /* Điều chỉnh độ rộng cho phù hợp */ padding-right: 10px; } .form-group input { flex: 2; }
+<style>
+.form-group {
+	display: flex;
+	align-items: center;
+	margin-bottom: 15px;
+}
 
+.form-group label {
+	flex: 1;
+	max-width: 150px; /* Điều chỉnh độ rộng cho phù hợp */
+	padding-right: 10px;
+}
+
+.form-group input {
+	flex: 2;
+}
 </style>
 
 <script type="text/javascript">
-	function setFormAction(action) { 
+	function setFormAction(action) {
 		document.getElementById('myForm').action = action;
 	}
 </script>
 
 <script>
-    function submitForm(actionUrl) {
-        const form = document.getElementById('contractForm');
-        form.action = actionUrl;
-        form.submit();
-    }
+	function submitForm(actionUrl) {
+		const form = document.getElementById('contractForm');
+		form.action = actionUrl;
+		form.submit();
+	}
 </script>
 
 </head>
@@ -70,118 +84,119 @@
 				<nav th:replace="~{Common/Admin_layout :: footernav}"></nav>
 				<div class="container">
 					<h1 class="mt-4 mb-4">My Contract</h1>
-					
-</head>
-<body>
-    <form th:action="@{/client/signcontract}" th:object="${contract}" method="post">
-		<div class="form-group">
-            <label for="contractId">Contract contractId:</label>
-            <span th:text="*{contractId}"></span>
-			<input type="hidden" th:field="*{contractId}" />
-        </div>
-        <div class="form-group">
-            <label for="contractCode">Contract Code:</label>
-            <span th:text="*{contractCode}"></span>
-            <input type="hidden" th:field="*{contractCode}" />
-        </div>
-        <div class="form-group">
-            <label for="employeeId">Customer Name:</label>
-            <span th:text="${username}"></span>
-        </div>
-        <div class="form-group">
-            <label for="contractDate">Contract Date:</label>
-            <span th:text="*{contractDate}"></span>
-            <input type="hidden" th:field="*{contractDate}" />
-        </div>
-        <div class="form-group">
-            <label for="deposit">Deposit:</label>
-            <span th:text="*{deposit}"></span>
-            <input type="hidden" th:field="*{deposit}" />
-        </div>
-        
-        <div class="form-group">
-            <label for="QuoteDate">Status:</label>
-            <span th:text="*{status}"></span>
-            <input type="hidden" id="status" th:field="*{status}" />
-        </div>
-		<h3>All My Quotes</h3>
-						<table width="100%" border="1">
-							<thead>
-								<tr>
-									<th>Service ID</th>
-									<th>Description</th>
-									<th>Quantity</th>
-									<th>Price</th>
-									<th>Day Created</th>
-								</tr>
-							</thead>
-							<tbody>
-								<!-- Loop through quotes -->
-								<tr th:each="quote, iter : ${quoteItems}">
-									<td th:text="${quote.serviceId}">Service ID</td>
-									<!-- <input type="hidden" th:field="*{serviceId}" /> -->
-									<td th:text="${quote.itemDescription}">Description</td>
-									<!-- <input type="hidden" th:field="*{itemDescription}" /> -->
-									<td th:text="${quote.quantity}">Quantity</td>
-									<!-- <input type="hidden" th:field="*{quantity}" /> -->
-									<td th:text="${quote.unitPrice}">Price</td>
-									<!-- <input type="hidden" th:field="*{unitPrice}" /> -->
-									<td th:text="${quote.createdAt}">Created At</td>
-                                    <!-- <input type="hidden" th:field="*{createdAt}" /> -->
-								</tr>
-							</tbody>
-						</table>
+
+					</head>
+					<body>
+						<form th:action="@{/client/signcontract}" th:object="${contract}"
+							method="post">
+							<div class="form-group">
+								<label for="contractId">Contract contractId:</label> <span
+									th:text="*{contractId}"></span> <input type="hidden"
+									th:field="*{contractId}" />
+							</div>
+							<div class="form-group">
+								<label for="contractCode">Contract Code:</label> <span
+									th:text="*{contractCode}"></span> <input type="hidden"
+									th:field="*{contractCode}" />
+							</div>
+							<div class="form-group">
+								<label for="employeeId">Customer Name:</label> <span
+									th:text="${username}"></span>
+							</div>
+							<div class="form-group">
+								<label for="contractDate">Contract Date:</label> <span
+									th:text="*{contractDate}"></span> <input type="hidden"
+									th:field="*{contractDate}" />
+							</div>
+							<div class="form-group">
+								<label for="deposit">Deposit:</label> <span th:text="*{deposit}"></span>
+								<input type="hidden" th:field="*{deposit}" />
+							</div>
+
+							<div class="form-group">
+								<label for="QuoteDate">Status:</label> <span th:text="*{status}"></span>
+								<input type="hidden" id="status" th:field="*{status}" />
+							</div>
+							<h3>All My Quotes</h3>
+							<table width="100%" border="1">
+								<thead>
+									<tr>
+										<th>Service ID</th>
+										<th>Description</th>
+										<th>Quantity</th>
+										<th>Price</th>
+										<th>Day Created</th>
+									</tr>
+								</thead>
+								<tbody>
+									<!-- Loop through quotes -->
+									<tr th:each="quote, iter : ${quoteItems}">
+										<td th:text="${quote.serviceId}">Service ID</td>
+										<!-- <input type="hidden" th:field="*{serviceId}" /> -->
+										<td th:text="${quote.itemDescription}">Description</td>
+										<!-- <input type="hidden" th:field="*{itemDescription}" /> -->
+										<td th:text="${quote.quantity}">Quantity</td>
+										<!-- <input type="hidden" th:field="*{quantity}" /> -->
+										<td th:text="${quote.unitPrice}">Price</td>
+										<!-- <input type="hidden" th:field="*{unitPrice}" /> -->
+										<td th:text="${quote.createdAt}">Created At</td>
+										<!-- <input type="hidden" th:field="*{createdAt}" /> -->
+									</tr>
+								</tbody>
+							</table>
+							</br>
+							<div th:if="${contract.status != 'SIGNED'}">
+								<button type="submit"
+									onclick="submitForm('@{client/signcontract}')">Sign
+									Contract</button>
+							</div>
+							<!-- Nút Payment -->
+						</form>
 						</br>
-		<div th:if="${contract.status != 'SIGNED'}">
-			<button type="submit" onclick="submitForm('@{client/signcontract}')">Sign Contract</button>
-		</div>
-		<!-- Nút Payment -->
-    </form>
-	</br>
-	<div th:if="${contract.status == 'SIGNED'}">
-		<form th:action="@{/client/payment}" th:object="${contract}" method="post">
-			<div class="form-group">
-				<label for="deposit">Total Amount:</label>
-				<span th:text="*{deposit}"></span>
-				<input type="hidden" th:field="*{deposit}" />
-			</div>
-			<div class="form-group">
-				<label for="deposit">Payment:</label>
-				<span th:text="*{deposit / 5}"></span>
-				<input type="hidden" th:field="*{deposit}" />
-			</div>
-			<div class="form-group">
-				<label for="dep">Remaining Amount:</label>
-				<span th:text="*{deposit - deposit / 5}"></span>
-				<input type="hidden" th:field="*{deposit}" />
-			</div>
-			<div class="form-group">
-				<input type="hidden" th:field="*{contractId}" />
-			</div>
-			<button type="submit">Payment</button>
-		</form>
-		<!-- </form> -->
-	</br>
-	<div th:if="${contract.status == 'SIGNED'}">
-		<form th:action="@{/client/comfirmcomplete}" th:object="${contract}" method="post">
-			<div class="form-group">
-				<input type="hidden" th:field="*{contractId}" />
-			</div>
-			<button type="submit">Confirm Complete</button>
-		</form>
-	</div>
+						<div th:if="${contract.status == 'SIGNED'}">
+							<form th:action="@{/client/payment}" th:object="${contract}"
+								method="post">
+								<div class="form-group">
+									<label for="deposit">Total Amount:</label> <span
+										th:text="*{deposit}"></span> <input type="hidden"
+										th:field="*{deposit}" />
+								</div>
+								<div class="form-group">
+									<label for="deposit">Payment:</label> <span
+										th:text="*{deposit / 5}"></span> <input type="hidden"
+										th:field="*{deposit}" />
+								</div>
+								<div class="form-group">
+									<label for="dep">Remaining Amount:</label> <span
+										th:text="*{deposit - deposit / 5}"></span> <input
+										type="hidden" th:field="*{deposit}" />
+								</div>
+								<div class="form-group">
+									<input type="hidden" th:field="*{contractId}" />
+								</div>
+								<button type="submit">Payment</button>
+							</form>
+							<!-- </form> -->
+							</br>
+							<div th:if="${contract.status == 'SIGNED'}">
+								<form th:action="@{/client/comfirmcomplete}"
+									th:object="${contract}" method="post">
+									<div class="form-group">
+										<input type="hidden" th:field="*{contractId}" />
+									</div>
+									<button type="submit">Confirm Complete</button>
+								</form>
+							</div>
 
-    <h4>
-        <span th:text="${successMessage}" style="color:red;"></span>
-    </h4>
-	<br>
+							<h4>
+								<span th:text="${successMessage}" style="color: red;"></span>
+							</h4>
+							<br>
+						</div>
 				</div>
+
+
 			</div>
-
-
 		</div>
-	</div>
-
-
 </body>
 </html>
