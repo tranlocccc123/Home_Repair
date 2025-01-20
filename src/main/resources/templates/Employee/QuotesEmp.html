@@ -168,9 +168,18 @@ table tr:hover {
 								<td>$<span
 									th:text="${#numbers.formatDecimal(q.totalAmount, 0, 2)}"></span></td>
 								<td th:text="${q.status}"></td>
-								<td><a
-									th:href="@{/Employee/quotesItem/{id}(id=${q.quoteId})}">view
-								</a></td>
+								<td>
+									<a
+										th:href="@{/Employee/quotesItem/{id}(id=${q.quoteId})}">View
+									</a>
+									
+									<a
+										th:href="@{/Employee/delete/{id}(id=${q.quoteId})}">Delete
+									</a>
+									<a
+										th:href="@{/Employee/edit/{id}(id=${q.quoteId})}">Edit
+									</a>
+								</td>
 								<td th:if="${q.status} == 'confirm'"><a th:href="@{/Employee/getinfoquotes/{id}(id=${q.quoteId})}">Create
 										Contract</a></td>
 

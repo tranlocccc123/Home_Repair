@@ -68,10 +68,16 @@ public class QuoteItemRepository {
         Integer count = db.queryForObject(checkSql, Integer.class, quoteId);
         return count != null && count > 0;
     }
-    public QuoteItems getQuoteI(int quoteid) {
+    public QuoteItems getQuoteById(int quoteid) {
  		String str_query = String.format("select * from tbl_quoteItems where QuoteID=?");
  		return db.queryForObject(str_query, new QuoteItem_mapper(), new Object[] { quoteid });
 
  	}
+     public QuoteItems getQuoteItemByQuoteItemID(int quoteItemId) {
+		//String sql="select * from tbl_quoteItems where QuoteItemID=?";
+		String str_query = String.format("select * from tbl_quoteItems where QuoteItemID=?");
+        return db.queryForObject(str_query, new QuoteItem_mapper(), new Object[] { quoteItemId });
+	}
+	
 }
 

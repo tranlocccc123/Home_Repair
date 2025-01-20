@@ -156,7 +156,7 @@ public class EmployeeController {
 		Quotes quote = repQuo.getQuote(quoteid);
 		model.addAttribute("quote", quote);
 		
-		QuoteItems quoteItem = repQuoItem.getQuoteI(quoteid);
+		QuoteItems quoteItem = repQuoItem.getQuoteById(quoteid);
 		model.addAttribute("quoteItems", quoteItem);
 		
 		Users customer = repUser.findById(id);
@@ -219,5 +219,42 @@ public class EmployeeController {
 	        // Trả về tên view, ví dụ là "contractItems"
 	        return "Employee/contractItems";  
 	    }
+		
+	@GetMapping("/getallquote")
+	public String getAllQuote(HttpServletRequest request, Model model) {
+		List<Users> users = repUser.findAll();
+		String username = (String) request.getSession().getAttribute("username");
+		List<Quotes> quotes = repQuo.findAll();
+		
+		Map<Integer, String> userIdToFullNameMap1 = users.stream()
+				.collect(Collectors.toMap(Users::getUserId, Users::getFullName));
 	
+		
+		model.addAttribute("userIdToFullNameMap1",userIdToFullNameMap1);
+		model.addAttribute("username", username);
+		model.addAttribute("quote", quotes);
+		return "Employee/QuotesEmp";
+
+	}
+
+	@GetMapping("/quoteItem/{id}")
+	public String getQuoteItemById(@PathVariable("id") int id, Model model) {
+	    QuoteItems quoteItem = repQuoItem.getQuoteItemByQuoteItemID(id);
+	    if (quoteItem == null) {
+	        return "Employee/QuoteItem/" + id;
+	    }
+		model.addAttribute("quoteItem", quoteItem);
+	    return "Employee/QuoteItem";
+	}
+
+	@PostMapping("/updateQuoteItem")
+	public String updateQuoteItem(@ModelAttribute("quoteItem") QuoteItems quoteItem, BindingResult result, Model model) {
+	    if (result.hasErrors()) {
+	        return "Employee/QuoteItem";
+	    }
+	    //repQuoItem.updateQuoteItem(quoteItem);
+		repQuoItem.saveQuoteItem(quoteItem);
+	    model.addAttribute("message", "Quote Item updated successfully");
+	    return "redirect:/Employee/quoteItem/" + quoteItem.getQuoteItemId();
+	}
 }
