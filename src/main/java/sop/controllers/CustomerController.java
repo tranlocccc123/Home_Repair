@@ -38,7 +38,7 @@ public class CustomerController {
 
 	@GetMapping("/index")
 	public String index() {
-		return "Clients/Index";
+		return "Common/Index";
 	}
 
 	@GetMapping("/login")

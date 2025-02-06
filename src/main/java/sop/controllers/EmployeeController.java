@@ -182,7 +182,7 @@ public class EmployeeController {
 		repCon.saveContract(contract);
 		quote.setStatus("Contracted");
 		repQuo.updatestatus(quote);
-		return "Employee/getinfoquotes/" + customerId;
+		return "Employee/Contract";//"Employee/getinfoquotes/" + customerId;
 	}
 
 	@GetMapping("/quoteslist")

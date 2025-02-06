@@ -122,10 +122,10 @@ table tr:hover {
 <body>
 	<div>
 		<div>
-			<nav th:replace="~{Common/Admin_layout :: navAdmin}"></nav>
+			<nav th:replace="~{Common/Client_layout :: navAdmin}"></nav>
 			<div class="container-fluid page-body-wrapper">
-				<div th:replace="~{Common/Admin_layout :: headernav}"></div>
-				<nav th:replace="~{Common/Admin_layout :: footernav}"></nav>
+				<div th:replace="~{Common/Client_layout :: headernav}"></div>
+				<nav th:replace="~{Common/Client_layout :: footernav}"></nav>
 				<div>
 					<h1>Quotes List</h1>
 
@@ -170,14 +170,14 @@ table tr:hover {
 								<td th:text="${q.status}"></td>
 								<td>
 									<a
-										th:href="@{/Employee/quotesItem/{id}(id=${q.quoteId})}">View
+										th:href="@{/Employee/quoteItem/{id}(id=${q.quoteId})}">View
 									</a>
 									
 									<a
 										th:href="@{/Employee/delete/{id}(id=${q.quoteId})}">Delete
 									</a>
 									<a
-										th:href="@{/Employee/edit/{id}(id=${q.quoteId})}">Edit
+										th:href="@{/Employee/quoteItem/{id}(id=${q.quoteId})}">Edit
 									</a>
 								</td>
 								<td th:if="${q.status} == 'confirm'"><a th:href="@{/Employee/getinfoquotes/{id}(id=${q.quoteId})}">Create

@@ -11,7 +11,7 @@ public class QuoteItem_mapper implements RowMapper<QuoteItems> {
     @Override
        public QuoteItems mapRow(ResultSet rs, int rowNum) throws SQLException {
         QuoteItems quotes = new QuoteItems();
-            quotes.setQuoteItemId(rs.getInt("QuoteItemId"));
+            quotes.setQuoteItemId(rs.getInt("QuoteItemID"));
             quotes.setQuoteId(rs.getInt("QuoteID"));
             quotes.setServiceId(rs.getInt("ServiceID"));
             quotes.setItemDescription(rs.getString("ItemDescription"));
